@@ -26,7 +26,7 @@ import Cookies from 'js-cookie';
         <div className="modal-section">
           <h3>Limitations</h3>
           <p>May occasionally generate incorrect information</p>
-          <p>A max of 5 messages can be sent a daily</p>
+          <p>A max of 3 messages can be sent a daily</p>
           <p>Has limited knowledge specific to UBC</p>
         </div>
   
@@ -36,6 +36,7 @@ import Cookies from 'js-cookie';
   );
 
 const App = () => {
+  const [messageCount, setMessageCount] = useState(parseInt(Cookies.get('messageCount') || 0));
   const [inputPlaceholder, setInputPlaceholder] = useState("Type your message here");
   const [isInputDisabled, setIsInputDisabled] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
@@ -49,6 +50,15 @@ const App = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    document.title = "UBC Science Chatbot";
+  }, []);
+
+
+  useEffect(() => {
+    document.title = "UBC Science Chatbot";
+  }, []);
 
   useEffect(() => {
     const hasVisited = localStorage.getItem('hasVisited');
@@ -78,7 +88,11 @@ const App = () => {
   };
   
   const getMessages = async () => {
-    if (!value.trim()) return;
+    if (!value.trim() || messageCount >= 3) {
+      setIsInputDisabled(true); 
+      setInputPlaceholder("Maximum 3 messages allowed per day");
+      return;
+    }
   
     setIsLoading(true);
     const userMessage = { role: 'user', content: value };
@@ -89,6 +103,8 @@ const App = () => {
       const response = await axios.post("https://ubc-chatbot-backend1.onrender.com/api/init-chat/", { message: value });
       const serverMessage = { role: 'assistant', content: response.data.message };
       setPreviousChats(prevChats => [...prevChats, serverMessage]);
+      setMessageCount(messageCount + 1);
+      Cookies.set('messageCount', messageCount + 1, { expires: 1 });
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
@@ -113,6 +129,7 @@ const App = () => {
 
   return (
     <div className="app">
+    <title>UBC Science Chatbot</title>
        <button onClick={toggleWelcomeModal} className="info-button">
         <img src={info} height={30}></img>
        </button>
@@ -155,7 +172,7 @@ const App = () => {
             )}
           </div>
           <p className="info"> 
-          Please note that the information provided by this chatbot is based on available data and algorithms, and may not always be accurate. We recommend double-checking any critical information to ensure its reliability and accuracy. <strong>Maximum 5 messages are allowed per day.</strong> </p>
+          Please note that the information provided by this chatbot is based on available data and algorithms, and may not always be accurate. We recommend double-checking any critical information to ensure its reliability and accuracy. <strong>Maximum 3 messages are allowed per day.</strong> </p>
         </div>
       </section>
     </div>
