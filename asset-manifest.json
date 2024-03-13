@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/ubc_chatbot_frontend1/static/css/main.9a224c52.css",
-    "main.js": "/ubc_chatbot_frontend1/static/js/main.141b5cb8.js",
-    "static/media/logo.png": "/ubc_chatbot_frontend1/static/media/logo.84ec126c7dc7244f8ced.png",
-    "static/media/info.png": "/ubc_chatbot_frontend1/static/media/info.95afed0f71877b2c948d.png",
-    "index.html": "/ubc_chatbot_frontend1/index.html",
-    "main.9a224c52.css.map": "/ubc_chatbot_frontend1/static/css/main.9a224c52.css.map",
-    "main.141b5cb8.js.map": "/ubc_chatbot_frontend1/static/js/main.141b5cb8.js.map"
+    "main.css": "/static/css/main.9a224c52.css",
+    "main.js": "/static/js/main.0d29affe.js",
+    "static/media/logo.png": "/static/media/logo.84ec126c7dc7244f8ced.png",
+    "static/media/info.png": "/static/media/info.95afed0f71877b2c948d.png",
+    "index.html": "/index.html",
+    "main.9a224c52.css.map": "/static/css/main.9a224c52.css.map",
+    "main.0d29affe.js.map": "/static/js/main.0d29affe.js.map"
   },
   "entrypoints": [
     "static/css/main.9a224c52.css",
-    "static/js/main.141b5cb8.js"
+    "static/js/main.0d29affe.js"
   ]
 }
