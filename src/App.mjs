@@ -12,7 +12,7 @@ import Cookies from 'js-cookie';
         <div className="modal-section">
           <h3>Examples</h3>
           <p>"What are prerequisite courses for CPSC 340?"</p>
-          <p>"What courses should I take if I want to learn about cell biology?"</p>
+          <p>"What are some courses about cell biology?"</p>
           <p>"What are some 300 level COGS courses?"</p>
         </div>
   
@@ -29,17 +29,17 @@ import Cookies from 'js-cookie';
           <p>A max of 3 messages can be sent a daily</p>
           <p>Has limited knowledge specific to UBC</p>
         </div>
-  
-        <button onClick={onClose}>Close</button>
       </div>
     </div>
   );
 
 const App = () => {
   const [messageCount, setMessageCount] = useState(parseInt(Cookies.get('messageCount') || 0));
-  const [inputPlaceholder, setInputPlaceholder] = useState("Type your message here");
+  const [inputPlaceholder, setInputPlaceholder] = useState(() => {
+    const messageCount = parseInt(Cookies.get('messageCount') || 0);
+    return messageCount >= 3 ? "Maximum 3 messages allowed per day" : "Type your message here";
+  });
   const [isInputDisabled, setIsInputDisabled] = useState(false);
-  const [isFirstVisit, setIsFirstVisit] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,16 +55,9 @@ const App = () => {
     document.title = "UBC Science Chatbot";
   }, []);
 
-
   useEffect(() => {
-    document.title = "UBC Science Chatbot";
-  }, []);
-
-  useEffect(() => {
-    const hasVisited = localStorage.getItem('hasVisited');
-    if (!hasVisited) {
-      setIsFirstVisit(true);
-      localStorage.setItem('hasVisited', 'true');
+    if (messageCount >= 3) {
+      setIsInputDisabled(true)
     }
   }, []);
 
@@ -74,17 +67,8 @@ const App = () => {
   }, [previousChats]);
 
   const reset = async () => {
-    let threadId = Cookies.get('threadId');
-    if (threadId) {
-      try {
-        Cookies.remove('threadId');
-        setPreviousChats([]);
-        setValue("");
-        await axios.post(`/api/threads/${threadId}/reset`);
-      } catch (error) {
-        console.error('Error resetting the thread:', error.response ? error.response.data : error);
-      }
-    }
+    setPreviousChats([]);
+    setValue("");
   };
   
   const getMessages = async () => {
@@ -163,7 +147,7 @@ const App = () => {
               }}
               onChange={(e) => setValue(e.target.value)}
               placeholder={isLoading ? "Thinking..." : isInputDisabled ? "Daily message limit reached" : "Type your message here"}
-              disabled={isLoading || inputPlaceholder === "Daily message limit reached"}
+              disabled={isLoading || isInputDisabled}
             />
             {isLoading ? (
               <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
